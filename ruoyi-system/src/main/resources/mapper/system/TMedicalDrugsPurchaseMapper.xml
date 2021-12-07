@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TMedicalDrugsPurchaseMapper">
+    
+    <resultMap type="TMedicalDrugsPurchase" id="TMedicalDrugsPurchaseResult">
+        <result property="id"    column="id"    />
+        <result property="drugsid"    column="drugsId"    />
+        <result property="source"    column="source"    />
+        <result property="address"    column="address"    />
+        <result property="batchnumbe"    column="batchNumbe"    />
+        <result property="no"    column="no"    />
+        <result property="manufacturetime"    column="manufactureTime"    />
+        <result property="termofvalidity"    column="termOfValidity"    />
+        <result property="abstracts"    column="abstract"    />
+        <result property="filledby"    column="FilledBy"    />
+        <result property="createtime"    column="createTime"    />
+        <result property="verifier"    column="Verifier"    />
+        <result property="verificationtime"    column="VerificationTime"    />
+        <result property="reviewer"    column="Reviewer"    />
+        <result property="audittime"    column="AuditTime"    />
+
+
+
+        <!--多对一 -->
+        <association property="TMedicalDrugsInfo" javaType="com.ruoyi.system.domain.TMedicalDrugsInfo">
+            <result property="id"    column="id"    />
+            <result property="name"    column="name"    />
+            <result property="specifications"    column="Specifications"    />
+            <result property="unit"    column="unit"    />
+            <result property="description"    column="description"    />
+            <result property="status"    column="status"    />
+            <result property="buyunitprice"    column="buyUnitPrice"    />
+            <result property="sellunitprice"    column="sellUnitPrice"    />
+            <result property="operator"    column="operator"    />
+            <result property="operatortime"    column="operatorTime"    />
+        </association>
+
+
+    </resultMap>
+
+    <sql id="selectTMedicalDrugsPurchaseVo">
+        select id, drugsId, source, address, batchNumbe, no, manufactureTime, termOfValidity, abstract, FilledBy, createTime, Verifier, VerificationTime, Reviewer, AuditTime from t_medical_drugs_purchase
+    </sql>
+    <sql id="info">
+        select a.id infoid ,a.`name`,b.id ,b.drugsId,b.source,b.address,b.batchNumbe,b.no,
+        b.manufactureTime,b.termOfValidity,b.abstract,b.FilledBy,b.createTime,b.Verifier,b.VerificationTime ,
+        b.Reviewer ,b.AuditTime from t_medical_drugs_info a  left join  t_medical_drugs_purchase b on a.id= b.drugsId where 1=1
+    </sql>
+
+    <select id="selectTMedicalDrugsPurchaseList" parameterType="TMedicalDrugsPurchase" resultMap="TMedicalDrugsPurchaseResult">
+        <include refid="selectTMedicalDrugsPurchaseVo"/>
+        <where>  
+            <if test="drugsid != null  and drugsid != ''"> and drugsId = #{drugsid}</if>
+            <if test="source != null  and source != ''"> and source = #{source}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="batchnumbe != null  and batchnumbe != ''"> and batchNumbe = #{batchnumbe}</if>
+            <if test="no != null "> and no = #{no}</if>
+            <if test="manufacturetime != null "> and manufactureTime = #{manufacturetime}</if>
+            <if test="termofvalidity != null "> and termOfValidity = #{termofvalidity}</if>
+            <if test="abstracts != null  and abstracts != ''"> and abstract = #{abstracts}</if>
+            <if test="filledby != null  and filledby != ''"> and FilledBy = #{filledby}</if>
+            <if test="createtime != null "> and createTime = #{createtime}</if>
+            <if test="verifier != null  and verifier != ''"> and Verifier = #{verifier}</if>
+            <if test="verificationtime != null "> and VerificationTime = #{verificationtime}</if>
+            <if test="reviewer != null  and reviewer != ''"> and Reviewer = #{reviewer}</if>
+            <if test="audittime != null "> and AuditTime = #{audittime}</if>
+        </where>
+    </select>
+    
+    <select id="selectTMedicalDrugsPurchaseById" parameterType="String" resultMap="TMedicalDrugsPurchaseResult">
+        <include refid="selectTMedicalDrugsPurchaseVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectTMedicalDrugs" parameterType="TMedicalDrugsPurchase" resultMap="TMedicalDrugsPurchaseResult">
+        <include refid="info"/>
+
+        and  a.id=drugsId
+        <if test="name != null  and name != ''"> and name like  concat('%',#{name},'%')</if>
+        <if test="drugsid != null  and drugsid != ''"> and drugsId = #{drugsid}</if>
+        <if test="source != null  and source != ''"> and source = #{source}</if>
+        <if test="address != null  and address != ''"> and address = #{address}</if>
+        <if test="batchnumbe != null  and batchnumbe != ''"> and batchNumbe = #{batchnumbe}</if>
+        <if test="manufacturetime != null "> and manufactureTime = #{manufacturetime}</if>
+        <if test="termofvalidity != null "> and termOfValidity = #{termofvalidity}</if>
+        <if test="abstracts != null  and abstracts != ''"> and abstract = #{abstracts}</if>
+        <if test="filledby != null  and filledby != ''"> and FilledBy = #{filledby}</if>
+        <if test="verifier != null  and verifier != ''"> and Verifier = #{verifier}</if>
+        <if test="verificationtime != null "> and VerificationTime = #{verificationtime}</if>
+        <if test="reviewer != null  and reviewer != ''"> and Reviewer = #{reviewer}</if>
+        <if test="audittime != null "> and AuditTime = #{audittime}</if>
+        <if test="no != null "> and no = #{no}</if>
+
+    </select>
+
+
+    <insert id="insertTMedicalDrugsPurchase" parameterType="TMedicalDrugsPurchase">
+        insert into t_medical_drugs_purchase
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="drugsid != null">drugsId,</if>
+            <if test="source != null">source,</if>
+            <if test="address != null">address,</if>
+            <if test="batchnumbe != null">batchNumbe,</if>
+            <if test="no != null">no,</if>
+            <if test="manufacturetime != null">manufactureTime,</if>
+            <if test="termofvalidity != null">termOfValidity,</if>
+            <if test="abstracts != null">abstract,</if>
+            <if test="filledby != null">FilledBy,</if>
+            <if test="createtime != null">createTime,</if>
+            <if test="verifier != null">Verifier,</if>
+            <if test="verificationtime != null">VerificationTime,</if>
+            <if test="reviewer != null">Reviewer,</if>
+            <if test="audittime != null">AuditTime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="drugsid != null">#{drugsid},</if>
+            <if test="source != null">#{source},</if>
+            <if test="address != null">#{address},</if>
+            <if test="batchnumbe != null">#{batchnumbe},</if>
+            <if test="no != null">#{no},</if>
+            <if test="manufacturetime != null">#{manufacturetime},</if>
+            <if test="termofvalidity != null">#{termofvalidity},</if>
+            <if test="abstracts != null">#{abstracts},</if>
+            <if test="filledby != null">#{filledby},</if>
+            <if test="createtime != null">#{createtime},</if>
+            <if test="verifier != null">#{verifier},</if>
+            <if test="verificationtime != null">#{verificationtime},</if>
+            <if test="reviewer != null">#{reviewer},</if>
+            <if test="audittime != null">#{audittime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTMedicalDrugsPurchase" parameterType="TMedicalDrugsPurchase">
+        update t_medical_drugs_purchase
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drugsid != null">drugsId = #{drugsid},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="batchnumbe != null">batchNumbe = #{batchnumbe},</if>
+            <if test="no != null">no = #{no},</if>
+            <if test="manufacturetime != null">manufactureTime = #{manufacturetime},</if>
+            <if test="termofvalidity != null">termOfValidity = #{termofvalidity},</if>
+            <if test="abstracts != null">abstract = #{abstracts},</if>
+            <if test="filledby != null">FilledBy = #{filledby},</if>
+            <if test="createtime != null">createTime = #{createtime},</if>
+            <if test="verifier != null">Verifier = #{verifier},</if>
+            <if test="verificationtime != null">VerificationTime = #{verificationtime},</if>
+            <if test="reviewer != null">Reviewer = #{reviewer},</if>
+            <if test="audittime != null">AuditTime = #{audittime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateTMedicalDrugsPurchases"  parameterType="com.ruoyi.system.domain.dto.TMedicalDrugsPurchasedto">
+    update t_medical_drugs_purchase
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="verifier != null">Verifier = #{verifier},</if>
+            <if test="verificationtime != null">VerificationTime = #{verificationtime},</if>
+            <if test="reviewer != null">Reviewer = #{reviewer},</if>
+            <if test="audittime != null">AuditTime = #{audittime},</if>
+        </trim>
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteTMedicalDrugsPurchaseById" parameterType="String">
+        delete from t_medical_drugs_purchase where id = #{id}
+    </delete>
+
+    <delete id="deleteTMedicalDrugsPurchaseByIds" parameterType="String">
+        delete from t_medical_drugs_purchase where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

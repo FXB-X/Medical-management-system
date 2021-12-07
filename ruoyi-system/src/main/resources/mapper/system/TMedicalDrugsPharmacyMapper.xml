@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TMedicalDrugsPharmacyMapper">
+    
+    <resultMap type="TMedicalDrugsPharmacy" id="TMedicalDrugsPharmacyResult">
+        <result property="id"    column="id"    />
+        <result property="drugsid"    column="drugsId"    />
+        <result property="name"    column="name"    />
+        <result property="no"    column="no"    />
+        <result property="updateTime"    column="updateTime"    />
+        <result property="operator"    column="operator"    />
+
+
+        <!--多对一 -->
+        <association property="TMedicalDrugsInfo" javaType="com.ruoyi.system.domain.TMedicalDrugsInfo">
+            <result property="id"    column="ifnoid"    />
+            <result property="name"    column="aname"    />
+            <result property="specifications"    column="Specifications"    />
+            <result property="unit"    column="unit"    />
+            <result property="description"    column="description"    />
+            <result property="status"    column="status"    />
+            <result property="buyunitprice"    column="buyUnitPrice"    />
+            <result property="sellunitprice"    column="sellUnitPrice"    />
+            <result property="operator"    column="operator"    />
+            <result property="operatortime"    column="operatorTime"    />
+        </association>
+    </resultMap>
+
+    <sql id="selectTMedicalDrugsPharmacyVo">
+        select a.id ifnoid ,a.`name` aname ,b.* from  t_medical_drugs_info a
+         LEFT OUTER JOIN   t_medical_drugs_pharmacy b   on a.id= b.drugsId where 1=1
+    </sql>
+
+    <select id="selectTMedicalDrugsPharmacyList" parameterType="TMedicalDrugsPharmacy" resultMap="TMedicalDrugsPharmacyResult">
+        <include refid="selectTMedicalDrugsPharmacyVo"/>
+            and a.id=drugsId
+<!--            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>-->
+            <if test="drugsid != null  and drugsid != ''"> and drugsId = #{drugsid}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="no != null "> and no = #{no}</if>
+            <if test="updateTime != null "> and updateTime = #{updateTime}</if>
+            <if test="operator != null  and operator != ''"> and operator = #{operator}</if>
+    </select>
+    
+    <select id="selectTMedicalDrugsPharmacyById" parameterType="String" resultMap="TMedicalDrugsPharmacyResult">
+        <include refid="selectTMedicalDrugsPharmacyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTMedicalDrugsPharmacy" parameterType="TMedicalDrugsPharmacy">
+        insert into t_medical_drugs_pharmacy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="drugsid != null">drugsId,</if>
+            <if test="name != null">name,</if>
+            <if test="no != null">no,</if>
+            <if test="updateTime != null">updateTime,</if>
+            <if test="operator != null">operator,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="drugsid != null">#{drugsid},</if>
+            <if test="name != null">#{name},</if>
+            <if test="no != null">#{no},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="operator != null">#{operator},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTMedicalDrugsPharmacy" parameterType="TMedicalDrugsPharmacy">
+        update t_medical_drugs_pharmacy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drugsid != null">drugsId = #{drugsid},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="no != null">no = #{no},</if>
+            <if test="updateTime != null">updateTime = #{updateTime},</if>
+            <if test="operator != null">operator = #{operator},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTMedicalDrugsPharmacyById" parameterType="String">
+        delete from t_medical_drugs_pharmacy where id = #{id}
+    </delete>
+
+    <delete id="deleteTMedicalDrugsPharmacyByIds" parameterType="String">
+        delete from t_medical_drugs_pharmacy where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
